@@ -67,11 +67,6 @@ Kimi 也可纯 API 调用（不装 CLI）：在 `~/.config/ai-keys/kimi-moonshot
 
 ---
 
-## 说明
-
-- 两个 skill 改编自一套个人 Claude Code 工作流，已移除内部项目引用与个人订阅信息。
-- `dispatch` 的模型选型逻辑（哪个模型擅长什么、什么任务派给谁）属于个人调优经验，**未包含在分享版中**——纯调用器把「选型」交给你自己的判断和你的 Claude。
-
 ## License
 
 MIT
