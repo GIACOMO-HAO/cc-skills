@@ -5,7 +5,7 @@
 - **`research`** — 研究调度：先用 SubAgent 快速侦察（Quick Recon）摸清方向和知识缺口，再决定是否升级到外部 Deep Research 平台。内置两轮 Recon、Claim Ledger 质控、独立 fact-check 协议，让外部平台只处理真正需要深挖的盲点。
 - **`dispatch`** — 多模型调用器：把任务或 prompt 一键派发给其他 AI 模型（Codex / Gemini / Kimi / DeepSeek / 豆包 / Qwen / GLM / MiniMax）执行并取回结果。
 
-> 这是个人 skill 的分享版。`dispatch` 是**纯调用器**形态——只提供调用能力，不内置任何选型偏好（选哪个模型、单派还是多派，交给你自己的 Claude 临场判断）。
+> `dispatch` 是**纯调用器**形态——只提供调用能力，不内置选型偏好（选哪个模型、单派还是多派，交给你自己的 Claude 临场判断）。
 
 ## 安装
 
