@@ -1,6 +1,8 @@
-# CC Skills — research & dispatch
+# giasip — research & dispatch skills
 
-两个 [Claude Code](https://claude.com/claude-code) 自定义 skill：
+> ✦ A **GiaSip** skill toolkit for [Claude Code](https://claude.com/claude-code) · github.com/GiaSip
+
+两个 Claude Code 自定义 skill，打包为 plugin `giasip`：
 
 - **`research`** — 研究调度：先用 SubAgent 快速侦察（Quick Recon）摸清方向和知识缺口，再决定是否升级到外部 Deep Research 平台。内置两轮 Recon、Claim Ledger 质控、独立 fact-check 协议，让外部平台只处理真正需要深挖的盲点。
 - **`dispatch`** — 多模型调用器：把任务或 prompt 一键派发给其他 AI 模型（Codex / Gemini / Kimi / DeepSeek / 豆包 / Qwen / GLM / MiniMax）执行并取回结果。
@@ -9,13 +11,26 @@
 
 ## 安装
 
-```bash
-git clone <repo-url> cc-skills
-cp -R cc-skills/research ~/.claude/skills/research
-cp -R cc-skills/dispatch ~/.claude/skills/dispatch
+### 方式一：作为 plugin 安装（推荐）
+
+```
+/plugin marketplace add GiaSip/cc-skills
+/plugin install giasip@giasip
 ```
 
-新开一个 Claude Code 会话即被自动发现。用 `/research`、`/dispatch` 触发，或直接描述意图（如「帮我调研一下…」「用 Kimi 跑一下…」）自动触发。
+装好后用 `/giasip:research`、`/giasip:dispatch` 触发，或直接描述意图（如「帮我调研一下…」「用 Kimi 跑一下…」）自动触发。
+
+### 方式二：手动安装单个 skill
+
+```bash
+git clone https://github.com/GiaSip/cc-skills
+cp -R cc-skills/skills/research ~/.claude/skills/research
+cp -R cc-skills/skills/dispatch ~/.claude/skills/dispatch
+```
+
+新开一个 Claude Code 会话即被自动发现，用 `/research`、`/dispatch` 触发。
+
+> 两种方式都有效——skill 内的脚本路径使用 `${CLAUDE_SKILL_DIR}` 自动定位，无论装在 plugin 缓存目录还是 `~/.claude/skills/` 下都能正确解析。
 
 ---
 
@@ -23,7 +38,7 @@ cp -R cc-skills/dispatch ~/.claude/skills/dispatch
 
 **基本零外部依赖，开箱即用**——主要用 Claude Code 自带的 WebSearch / WebFetch / SubAgent（WebFetch 遇 JS 渲染页面时可选用 Firecrawl 作 fallback，非必需）。
 
-唯一需要配置的：`research/platform-profiles.md` 里有一张「平台可用性」表，按你自己实际订阅的 Deep Research 平台（ChatGPT / Gemini / Perplexity / Kimi 等）填一下 ✅/❌ 即可，匹配逻辑会据此跳过未订阅的平台。
+唯一需要配置的：`skills/research/platform-profiles.md` 里有一张「平台可用性」表，按你自己实际订阅的 Deep Research 平台（ChatGPT / Gemini / Perplexity / Kimi 等）填一下 ✅/❌ 即可，匹配逻辑会据此跳过未订阅的平台。
 
 ---
 
@@ -43,7 +58,7 @@ dispatch 有两类调用通道，按需配置：
 | 豆包（火山引擎） | `~/.config/ai-keys/volcengine.env` | `export ARK_API_KEY=...` |
 | MiniMax | `~/.config/ai-keys/minimax.env` | `export MINIMAX_API_KEY=...` |
 
-测试：`dispatch/scripts/api-dispatch.sh --model deepseek "你好"`
+测试：`${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "你好"`
 
 > 各模型的具体模型名（如 `deepseek-v4-pro`、`doubao-seed-2-0-pro-260215`）写在 `api-dispatch.sh` 的 `case` 分支里，会随厂商版本更新——跑不通时先去脚本里改 `MODEL_ID`。
 
@@ -69,4 +84,4 @@ Kimi 也可纯 API 调用（不装 CLI）：在 `~/.config/ai-keys/kimi-moonshot
 
 ## License
 
-MIT
+MIT © GiaSip

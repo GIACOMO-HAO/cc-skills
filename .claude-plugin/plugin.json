@@ -1,0 +1,11 @@
+{
+  "name": "giasip",
+  "description": "GiaSip's AI workflow skills for Claude Code — research orchestration & multi-model dispatch.",
+  "version": "1.0.0",
+  "author": {
+    "name": "GiaSip"
+  },
+  "homepage": "https://github.com/GiaSip/cc-skills",
+  "repository": "https://github.com/GiaSip/cc-skills",
+  "license": "MIT"
+}

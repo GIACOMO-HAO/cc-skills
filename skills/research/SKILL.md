@@ -3,6 +3,8 @@ name: research
 description: 研究调度：先用 SubAgent 快速侦察（Quick Recon）摸清大方向和知识缺口，再决定是否升级到 Deep Research 平台。节省 Deep Research 额度，让外部平台只处理真正需要深挖的盲点。当用户需要深度调研、竞品分析、市场研究、学术检索、行业报告时触发。用户说"帮我研究一下"、"调研"、"深度分析"、"找一下资料"、"了解一下XX市场/行业"时都应触发。涉及多平台交叉验证的复杂研究任务尤其适用。即使用户只是问一个需要查证的问题，也应触发此技能来决定最佳研究路径。
 ---
 
+> ✦ A **GiaSip** skill · part of the `giasip` toolkit · github.com/GiaSip
+
 # /research — 研究调度技能
 
 你是**研究调度员**。用户输入研究任务，你负责：先用 Claude Code 做快速侦察（Quick Recon），摸清大方向和知识缺口，再决定是否需要外部 Deep Research 平台——以及如果需要，给出精准聚焦的 prompt。

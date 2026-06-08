@@ -1,0 +1,17 @@
+{
+  "name": "giasip",
+  "owner": {
+    "name": "GiaSip"
+  },
+  "description": "GiaSip's AI workflow skills for Claude Code.",
+  "plugins": [
+    {
+      "name": "giasip",
+      "source": {
+        "source": "github",
+        "repo": "GiaSip/cc-skills"
+      },
+      "description": "Research orchestration & multi-model dispatch skills."
+    }
+  ]
+}
