@@ -14,7 +14,7 @@
 ### 方式一：作为 plugin 安装（推荐）
 
 ```
-/plugin marketplace add GiaSip/cc-skills
+/plugin marketplace add GiaSip/giasip-skills
 /plugin install giasip@giasip
 ```
 
@@ -23,9 +23,9 @@
 ### 方式二：手动安装单个 skill
 
 ```bash
-git clone https://github.com/GiaSip/cc-skills
-cp -R cc-skills/skills/research ~/.claude/skills/research
-cp -R cc-skills/skills/dispatch ~/.claude/skills/dispatch
+git clone https://github.com/GiaSip/giasip-skills
+cp -R giasip-skills/skills/research ~/.claude/skills/research
+cp -R giasip-skills/skills/dispatch ~/.claude/skills/dispatch
 ```
 
 新开一个 Claude Code 会话即被自动发现，用 `/research`、`/dispatch` 触发。

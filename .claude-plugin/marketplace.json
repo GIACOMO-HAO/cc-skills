@@ -9,7 +9,7 @@
       "name": "giasip",
       "source": {
         "source": "github",
-        "repo": "GiaSip/cc-skills"
+        "repo": "GiaSip/giasip-skills"
       },
       "description": "Research orchestration & multi-model dispatch skills."
     }
