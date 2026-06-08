@@ -1,5 +1,5 @@
 ---
-name: dispatch
+name: giasip-dispatch
 description: 多模型调用器 — 把任务或 prompt 派发给其他 AI 模型（Codex / Gemini / Kimi / DeepSeek / 豆包 / Qwen / GLM / MiniMax）执行并取回结果。当你想用某个或某几个其他模型跑任务、需要多模型交叉对比验证、或想用更便宜的模型省钱时触发。提供两类调用通道：API 直调（只需 API key）和 CLI 调用（需本地装对应 CLI）。触发信号：「用 Kimi/Codex/Gemini 跑一下」「交给其他 AI」「换个模型试试」「让几个模型都看看」「这个不用最贵的模型」。
 ---
 
