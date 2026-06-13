@@ -1,133 +1,133 @@
-# Deep Research 平台能力档案
+# Deep Research Platform Profiles
 
-> 供 `/research` Skill 查询各 Deep Research 平台能力档案。
+> Reference for the `/research` skill to look up each Deep Research platform's capabilities.
 >
-> **匹配原则：选最强能力，不选最低成本。**
+> **Matching principle: pick the strongest capability, not the lowest cost.**
 
 ---
 
-## 平台可用性（按你自己的订阅情况填写）
+## Platform Availability (fill in based on your subscriptions)
 
-> 匹配逻辑会据此表判断哪些平台可用。请根据你实际订阅的平台填写——未订阅的标记为不可用，匹配时会自动跳过或建议替代。
+> The matching logic uses this table to determine which platforms are available. Fill in based on the platforms you actually subscribe to — unsubscribed platforms are marked unavailable and will be auto-skipped or replaced during matching.
 
-| 平台 | 是否可用 | 月度用量提示 |
-|------|---------|-------------|
-| Claude Research | ✅ / ❌ | 视订阅级别 |
-| ChatGPT DR | ✅ / ❌ | Plus 版 Deep Research 有月度上限 |
-| Gemini DR | ✅ / ❌ | 视订阅级别 |
-| Perplexity | ✅ / ❌ | Pro 版较充裕 |
-| Kimi-Researcher | ✅ / ❌ | 付费版有月度限额 |
-| Grok | ✅ / ❌ | 仅 Twitter/X 舆情场景 |
-| 智谱沉思 / 秘塔 AI | ✅ / ❌ | 免费版通常不限量 |
-| MiniMax / 通义千问 | ✅ / ❌ | 按次或 API 计费 |
+| Platform | Available | Monthly Usage Note |
+|----------|-----------|-------------------|
+| Claude Research | ✅ / ❌ | Depends on subscription tier |
+| ChatGPT DR | ✅ / ❌ | Plus Deep Research has a monthly cap |
+| Gemini DR | ✅ / ❌ | Depends on subscription tier |
+| Perplexity | ✅ / ❌ | Pro tier is generous |
+| Kimi-Researcher | ✅ / ❌ | Paid tier has a monthly cap |
+| Grok | ✅ / ❌ | Twitter/X sentiment analysis only |
+| Zhipu AutoGLM / Metaso AI | ✅ / ❌ | Free tier typically unlimited |
+| MiniMax / Tongyi Qwen | ✅ / ❌ | Pay-per-use or API billing |
 
 ---
 
-## 国际平台
+## International Platforms
 
-### ChatGPT Deep Research（OpenAI）
-- 底层：o3 / o4-mini（RL 微调）
-- 速度：中等偏慢（5-30 分钟）| 报告：23+ 页
-- **最强能力**：多模态（PDF+图片+文本）、报告深度最强、引用最丰富
-- **最适合**：高风险英文专业研究、投资分析、学术综述、竞争情报、GitHub 深度挖掘
-- **弱项**：中文覆盖弱、速度慢
+### ChatGPT Deep Research (OpenAI)
+- Engine: o3 / o4-mini (RL fine-tuned)
+- Speed: medium-slow (5-30 min) | Report: 23+ pages
+- **Strongest at**: multimodal (PDF + image + text), deepest reports, richest citations
+- **Best for**: high-stakes English professional research, investment analysis, academic reviews, competitive intelligence, deep GitHub mining
+- **Weak at**: Chinese coverage, speed
 
-### Gemini Deep Research（Google）
-- 底层：Gemini 2.5 Pro（MoE）
-- 速度：快（1-5 分钟）| 报告：15-22 页
-- **最强能力**：研究计划可预览编辑、Google 生态整合、播客输出、有效引用最多（111+）
-- **最适合**：战略/行业/市场宏观分析、需要快速出框架
-- **弱项**：不支持多模态分析、细节深度不如 ChatGPT
+### Gemini Deep Research (Google)
+- Engine: Gemini 2.5 Pro (MoE)
+- Speed: fast (1-5 min) | Report: 15-22 pages
+- **Strongest at**: editable research plan preview, Google ecosystem integration, podcast output, most effective citations (111+)
+- **Best for**: strategic / industry / market macro analysis, rapid framework generation
+- **Weak at**: no multimodal analysis, less detailed than ChatGPT
 
-### Claude Research（Anthropic）
-- 底层：Claude Sonnet + Extended Thinking
-- 速度：较慢（15-30 分钟+）| 报告：~5 页（简洁风格）
-- **最强能力**：幻觉率最低（~24%）、唯一支持企业内部数据整合（MCP）、并行搜索
-- **最适合**：企业内外数据整合、技术/代码研究、低幻觉决策简报
-- **弱项**：引用少（~20）、报告简短
+### Claude Research (Anthropic)
+- Engine: Claude Sonnet + Extended Thinking
+- Speed: slow (15-30+ min) | Report: ~5 pages (concise style)
+- **Strongest at**: lowest hallucination rate (~24%), only platform with internal data integration (MCP), parallel search
+- **Best for**: enterprise internal + external data integration, technical / code research, low-hallucination decision briefs
+- **Weak at**: few citations (~20), short reports
 
 ### Perplexity Deep Research
-- 底层：DeepSeek-R1（优化版）
-- 速度：极快（< 3 分钟）| 报告：7-12 页
-- **最强能力**：最快、引用准确率最高（90.24%）、句子级引用溯源
-- **最适合**：快速事实核查、实时新闻跟踪、引用透明度要求高的场景
-- **弱项**：深度最浅、报告质量不稳定
+- Engine: DeepSeek-R1 (optimized)
+- Speed: fastest (< 3 min) | Report: 7-12 pages
+- **Strongest at**: fastest, highest citation accuracy (90.24%), sentence-level citation tracing
+- **Best for**: quick fact-checking, real-time news tracking, high citation transparency requirements
+- **Weak at**: shallowest depth, inconsistent report quality
 
-### Grok Deep Search（xAI）
-- 底层：Grok 3
-- **最强能力**：Twitter/X 原生整合、实时社交舆情
-- **最适合**：Twitter 话题追踪（唯一场景）
-- **弱项**：幻觉率高、引用极少
+### Grok Deep Search (xAI)
+- Engine: Grok 3
+- **Strongest at**: native Twitter/X integration, real-time social sentiment
+- **Best for**: Twitter topic tracking (single use case)
+- **Weak at**: high hallucination rate, very few citations
 
 ---
 
-## 国内平台
+## Chinese Platforms
 
-### 智谱 AutoGLM 沉思
-- 底层：GLM-Z1-Rumination（32B MoE）
-- 速度：较慢（15-30 分钟+）| 报告：~1 万字
-- **最强能力**：浏览器操控（可登录知网/小红书/公众号/知乎/淘宝）、中文覆盖最广
-- **最适合**：中国特色平台信息获取、需要登录态的中文平台爬取
-- **弱项**：报告深度不如 ChatGPT/Kimi、占用本地浏览器、英文学术弱
+### Zhipu AutoGLM Rumination
+- Engine: GLM-Z1-Rumination (32B MoE)
+- Speed: slow (15-30+ min) | Report: ~10,000 Chinese characters
+- **Strongest at**: browser automation (can log into CNKI / Xiaohongshu / WeChat Official Accounts / Zhihu / Taobao), widest Chinese coverage
+- **Best for**: extracting data from Chinese walled-garden platforms, tasks requiring authenticated access
+- **Weak at**: report depth vs ChatGPT/Kimi, occupies local browser, weak on English academic
 
-### Kimi-Researcher（月之暗面）
-- 底层：端到端 Agentic RL 专用模型
-- 速度：最慢（可达 1 小时）| 报告：~7500 字 | HLE: 26.9%
-- **最强能力**：中文报告质量最高、极低幻觉率、矛盾信息自动对抗、严格信息筛选
-- **最适合**：学术文献综述、政策法规对比、高可信度中文正式报告
-- **弱项**：速度最慢、有月度限额
+### Kimi-Researcher (Moonshot)
+- Engine: end-to-end agentic RL specialized model
+- Speed: slowest (up to 1 hour) | Report: ~7,500 characters | HLE: 26.9%
+- **Strongest at**: highest Chinese report quality, ultra-low hallucination, automatic contradiction detection, strict information screening
+- **Best for**: academic literature reviews, policy/regulation comparison, high-credibility formal Chinese reports
+- **Weak at**: slowest speed, monthly quota
 
 ### MiniMax Agent Pro
-- 底层：MiniMax-M1/M2.1（230B MoE）
-- 速度：快（100+ tokens/秒）
-- **最强能力**：400 万 token 超长上下文、成本极低
-- **最适合**：超长文档分析（法律合同/医疗病历/工业日志）
-- **弱项**：无独立 Deep Research 入口
+- Engine: MiniMax-M1/M2.1 (230B MoE)
+- Speed: fast (100+ tokens/sec)
+- **Strongest at**: 4M token ultra-long context, extremely low cost
+- **Best for**: ultra-long document analysis (legal contracts / medical records / industrial logs)
+- **Weak at**: no standalone Deep Research interface
 
-### 秘塔 AI 深度研究
-- 底层：DeepSeek-R1 + 自研模型
-- 速度：中等
-- **最强能力**：思维导图可视化、隐私保护好
-- **最适合**：中文快速检索、思维导图辅助分析
-- **弱项**：产品较新、生态整合有限
+### Metaso AI Deep Research
+- Engine: DeepSeek-R1 + proprietary model
+- Speed: medium
+- **Strongest at**: mind map visualization, good privacy protection
+- **Best for**: Chinese quick retrieval, mind-map-assisted analysis
+- **Weak at**: newer product, limited ecosystem integration
 
-### 通义千问 Deep Research
-- 底层：Qwen
-- 速度：中等
-- **最强能力**：中文能力良好、API 集成友好
-- **最适合**：API 开发者、中文研究补充
-- **弱项**：功能相对基础
-
----
-
-## 独特能力速查
-
-| 独特能力 | 唯一/最强平台 |
-|---------|--------------|
-| 多模态研究（PDF+图片+文本） | ChatGPT |
-| 研究计划预览可编辑 | Gemini |
-| 企业内部数据整合（MCP） | Claude |
-| 引用准确率最高 + 句子级溯源 | Perplexity |
-| Twitter/X 实时舆情 | Grok |
-| 浏览器操控（知网/小红书等） | 智谱沉思 |
-| 中文报告质量 + 矛盾对抗 | Kimi |
-| 400 万 token 超长上下文 | MiniMax |
-| 思维导图可视化 | 秘塔 AI |
-| Google 生态 + 播客输出 | Gemini |
+### Tongyi Qwen Deep Research
+- Engine: Qwen
+- Speed: medium
+- **Strongest at**: solid Chinese capability, API-integration friendly
+- **Best for**: API developers, Chinese research supplement
+- **Weak at**: relatively basic features
 
 ---
 
-## 能力评分矩阵
+## Unique Capability Quick Reference
 
-| 平台 | 报告深度 | 引用可信度 | 速度 | 幻觉风险 | 中文能力 |
-|------|---------|-----------|------|---------|---------|
-| ChatGPT DR | ★★★★★ | ★★★ | ★★ | 中 | ★★ |
-| Gemini DR | ★★★★ | ★★★★ | ★★★★ | 中 | ★★ |
-| Claude Research | ★★★★ | ★★★★ | ★★★ | 最低 | ★★★ |
-| Perplexity | ★★★ | ★★★★★ | ★★★★★ | 较低 | ★★ |
-| Grok | ★★ | ★ | ★★★★ | 高 | ★ |
-| 智谱沉思 | ★★★ | ★★★ | ★★ | 中 | ★★★★★ |
-| Kimi | ★★★★★ | ★★★★★ | ★ | 最低 | ★★★★★ |
-| MiniMax | ★★★ | ★★★ | ★★★★ | 中 | ★★★ |
-| 秘塔 AI | ★★★ | ★★★ | ★★★ | 中 | ★★★★★ |
-| 通义千问 DR | ★★★ | ★★★ | ★★★ | 中 | ★★★★ |
+| Unique Capability | Only / Best Platform |
+|-------------------|---------------------|
+| Multimodal research (PDF + image + text) | ChatGPT |
+| Editable research plan preview | Gemini |
+| Enterprise internal data integration (MCP) | Claude |
+| Highest citation accuracy + sentence-level tracing | Perplexity |
+| Twitter/X real-time sentiment | Grok |
+| Browser automation (CNKI / Xiaohongshu, etc.) | Zhipu AutoGLM |
+| Chinese report quality + contradiction detection | Kimi |
+| 4M token ultra-long context | MiniMax |
+| Mind map visualization | Metaso AI |
+| Google ecosystem + podcast output | Gemini |
+
+---
+
+## Capability Scoring Matrix
+
+| Platform | Report Depth | Citation Reliability | Speed | Hallucination Risk | Chinese Capability |
+|----------|-------------|---------------------|-------|--------------------|--------------------|
+| ChatGPT DR | ★★★★★ | ★★★ | ★★ | Medium | ★★ |
+| Gemini DR | ★★★★ | ★★★★ | ★★★★ | Medium | ★★ |
+| Claude Research | ★★★★ | ★★★★ | ★★★ | Lowest | ★★★ |
+| Perplexity | ★★★ | ★★★★★ | ★★★★★ | Low | ★★ |
+| Grok | ★★ | ★ | ★★★★ | High | ★ |
+| Zhipu AutoGLM | ★★★ | ★★★ | ★★ | Medium | ★★★★★ |
+| Kimi | ★★★★★ | ★★★★★ | ★ | Lowest | ★★★★★ |
+| MiniMax | ★★★ | ★★★ | ★★★★ | Medium | ★★★ |
+| Metaso AI | ★★★ | ★★★ | ★★★ | Medium | ★★★★★ |
+| Tongyi Qwen DR | ★★★ | ★★★ | ★★★ | Medium | ★★★★ |

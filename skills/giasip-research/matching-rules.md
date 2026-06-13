@@ -1,195 +1,195 @@
-# 研究匹配规则
+# Research Matching Rules
 
-> 核心原则：能力适配优先——选最擅长该任务的平台，不选最便宜的（在你已订阅的平台范围内）。
+> Core principle: capability fit first — pick the platform best at the task, not the cheapest (within your subscribed platforms).
 
 ---
 
-## 一、匹配流程
+## 1. Matching Flow
 
 ```
-收到研究任务
+Receive research task
 │
-├── 1. 能否自研？
-│   ├── 简单事实查询 → Claude Code 直接做（Firecrawl/WebSearch）
-│   └── 需要深度报告/受限平台/交叉验证 → 继续
+├── 1. Can we handle it in-house?
+│   ├── Simple fact lookup → Claude Code does it directly (Firecrawl/WebSearch)
+│   └── Needs deep report / walled-garden platform / cross-validation → continue
 │
-├── 2. 语言分流
-│   ├── 中文为主 → 中文能力池
-│   ├── 英文为主 → 英文能力池
-│   └── 中英混合 → 两池组合
+├── 2. Language routing
+│   ├── Primarily Chinese → Chinese capability pool
+│   ├── Primarily English → English capability pool
+│   └── Mixed → combine both pools
 │
-├── 3. 按任务类型匹配最强能力平台
-│   │  （见下方规则 A-H）
+├── 3. Match strongest platform by task type
+│   │  (see Rules A-H below)
 │   │
-│   └── 关键：选"最擅长这类任务的平台"
-│        不是"最便宜的"或"免费的"
+│   └── Key: pick "who is best at this type of task"
+│        not "who is cheapest" or "who is free"
 │
-├── 4. 特殊需求加权
-│   ├── 低幻觉 → +Claude / +Kimi
-│   ├── 学术级引用 → +Perplexity / +Kimi
-│   ├── 思维导图 → +秘塔 AI
-│   ├── 超长文档 → +MiniMax
-│   └── 播客输出 → +Gemini
+├── 4. Special requirements weighting
+│   ├── Low hallucination → +Claude / +Kimi
+│   ├── Academic-grade citations → +Perplexity / +Kimi
+│   ├── Mind map → +Metaso AI
+│   ├── Ultra-long documents → +MiniMax
+│   └── Podcast output → +Gemini
 │
-└── 5. 用量提示（仅作为备注，不影响平台选择）
-    ├── ChatGPT Plus 25 次/月 → 留给高价值任务
-    ├── Kimi 有月度限额 → 留给高价值中文任务
-    └── 其他平台无显著限制
+└── 5. Usage advisory (noted only, does not affect platform selection)
+    ├── ChatGPT Plus 25 uses/month → save for high-value tasks
+    ├── Kimi has monthly cap → save for high-value Chinese tasks
+    └── Other platforms have no significant limits
 ```
 
 ---
 
-## 二、能力池
+## 2. Capability Pools
 
-### 英文能力池
+### English Capability Pool
 
-| 最佳场景 | 首选平台 | 核心理由 |
-|---------|---------|---------|
-| 深度专业研究、多模态分析、GitHub 深挖 | ChatGPT DR | 报告最深、引用最丰富 |
-| 宏观战略分析、快速出框架 | Gemini DR | 速度最快、研究计划可编辑 |
-| 低幻觉、企业数据整合 | Claude Research | 幻觉率最低、MCP 内部整合 |
-| 快速事实核查、引用溯源 | Perplexity | 最快、引用准确率最高 |
-| Twitter 舆情 | Grok | X 原生数据 |
+| Best Scenario | Top Pick | Key Reason |
+|---------------|----------|------------|
+| Deep professional research, multimodal analysis, GitHub deep-dive | ChatGPT DR | Deepest reports, richest citations |
+| Macro strategic analysis, rapid framework | Gemini DR | Fastest, editable research plan |
+| Low hallucination, enterprise data integration | Claude Research | Lowest hallucination rate, MCP internal integration |
+| Quick fact-checking, citation tracing | Perplexity | Fastest, highest citation accuracy |
+| Twitter sentiment | Grok | Native X data |
 
-### 中文能力池
+### Chinese Capability Pool
 
-| 最佳场景 | 首选平台 | 核心理由 |
-|---------|---------|---------|
-| 高质量正式报告、学术/政策 | Kimi-Researcher | 中文质量最高、幻觉最低 |
-| 受限平台爬取（知网/小红书等） | 智谱沉思 | 唯一浏览器操控能力 |
-| 快速检索、思维导图 | 秘塔 AI | 可视化好、速度快 |
-| 超长文档分析 | MiniMax | 400 万 token 上下文 |
-| API 集成 | 通义千问 DR | API 友好 |
-
----
-
-## 三、研究类型匹配规则
-
-### 规则 A：高风险专业研究
-
-> 给客户/领导/学术发表的研究报告。质量是唯一标准。
-
-**英文：** ChatGPT Deep Research
-- 报告最深、引用最丰富，是英文深度研究的最强选择
-- 复杂度极高时：ChatGPT DR + Perplexity 交叉验证
-
-**中文：** Kimi-Researcher
-- 中文报告质量最高、幻觉最低、矛盾信息自动对抗
-- 需要知网/公众号数据时：Kimi（分析）+ 智谱沉思（数据获取）
-
-**注意：** 高风险报告中的数字/财务数据务必人工核实，引用必须抽查。
-
-### 规则 B：战略/行业/宏观分析
-
-> 行业趋势、市场调研、竞争格局
-
-**首选：** Gemini Deep Research — 综合基准最高（DeepResearch Bench 48.88），研究计划可预览编辑，出框架最快
-
-**需要更多细节时：** Gemini（框架）+ ChatGPT DR（深度补充）
-
-### 规则 C：快速事实核查
-
-> 验证说法、追踪新闻、快速数据查找
-
-**首选：** Perplexity — 最快（<3 分钟）、引用准确率最高（90.24%）、句子级溯源
-
-**中文事实核查：** 秘塔 AI 或智谱沉思
-
-### 规则 D：企业内部+外部数据整合
-
-> 结合 Slack/Jira/CRM 数据与外部信息
-
-**唯一选择：** Claude Research — 通过 MCP 连接内部系统，幻觉率最低
-
-### 规则 E：中国平台信息获取
-
-> 需要从知网、小红书、公众号、知乎、淘宝获取信息
-
-**首选：** 智谱沉思 — 唯一具备浏览器操控能力，可登录受限平台
-
-**需要深度分析时：** 智谱沉思（数据获取）+ Kimi（深度分析）
-
-### 规则 F：超长文档分析
-
-> 法律合同、医疗病历、工业日志
-
-**首选：** MiniMax Agent Pro — 400 万 token 上下文
-
-### 规则 G：舆情分析
-
-**Twitter/X：** Grok（如未订阅可评估临时订阅，或用 Perplexity 替代）
-**中国社交平台：** 智谱沉思
-**综合舆情：** 组合使用
-
-### 规则 H：混合/其他
-
-按最关键的需求维度匹配，核心需求优先，然后叠加组合策略。
-
-如任务同时涉及编码 + 研究 → 建议使用 `/dispatch` 匹配编码工具 + `/research` 匹配研究平台。
+| Best Scenario | Top Pick | Key Reason |
+|---------------|----------|------------|
+| High-quality formal report, academic/policy | Kimi-Researcher | Highest Chinese quality, lowest hallucination |
+| Walled-garden platform crawling (CNKI / Xiaohongshu, etc.) | Zhipu AutoGLM | Only platform with browser automation |
+| Quick retrieval, mind map | Metaso AI | Good visualization, fast |
+| Ultra-long document analysis | MiniMax | 4M token context |
+| API integration | Tongyi Qwen DR | API-friendly |
 
 ---
 
-## 四、组合策略
+## 3. Task Type Matching Rules
 
-### 英文深度研究组合
+### Rule A: High-Stakes Professional Research
 
-| 角色 | 平台 | 用途 |
-|------|------|------|
-| 主力 | ChatGPT DR | 深度报告 |
-| 验证 | Perplexity | 引用核查 |
-| 框架 | Gemini | 战略补充 + Google Docs 导出 |
+> Research reports for clients / leadership / academic publication. Quality is the only criterion.
 
-### 中文深度研究组合
+**English:** ChatGPT Deep Research
+- Deepest reports, richest citations — the strongest choice for English deep research
+- For extreme complexity: ChatGPT DR + Perplexity cross-validation
 
-| 角色 | 平台 | 用途 |
-|------|------|------|
-| 主力 | Kimi-Researcher | 深度分析（中文质量最高） |
-| 数据 | 智谱沉思 | 受限平台数据抓取 |
-| 速查 | 秘塔 AI | 快速检索 + 思维导图可视化 |
+**Chinese:** Kimi-Researcher
+- Highest Chinese report quality, lowest hallucination, automatic contradiction detection
+- When CNKI / WeChat Official Account data is needed: Kimi (analysis) + Zhipu AutoGLM (data acquisition)
 
-### 中英混合组合
+**Note:** Numbers and financial data in high-stakes reports must be manually verified; citations must be spot-checked.
 
-| 角色 | 平台 | 用途 |
-|------|------|------|
-| 英文主力 | ChatGPT DR | 英文信息源深度挖掘 |
-| 中文主力 | Kimi 或 智谱沉思 | 中文信息源覆盖 |
-| 验证 | Perplexity | 关键声明交叉核查 |
+### Rule B: Strategic / Industry / Macro Analysis
+
+> Industry trends, market research, competitive landscape
+
+**Top pick:** Gemini Deep Research — highest composite benchmark (DeepResearch Bench 48.88), editable research plan preview, fastest framework output
+
+**When more detail is needed:** Gemini (framework) + ChatGPT DR (deep supplement)
+
+### Rule C: Quick Fact-Checking
+
+> Verify claims, track news, rapid data lookups
+
+**Top pick:** Perplexity — fastest (< 3 min), highest citation accuracy (90.24%), sentence-level tracing
+
+**Chinese fact-checking:** Metaso AI or Zhipu AutoGLM
+
+### Rule D: Enterprise Internal + External Data Integration
+
+> Combining Slack / Jira / CRM data with external information
+
+**Only choice:** Claude Research — connects to internal systems via MCP, lowest hallucination rate
+
+### Rule E: Chinese Walled-Garden Platform Data
+
+> Extracting information from CNKI, Xiaohongshu, WeChat Official Accounts, Zhihu, Taobao
+
+**Top pick:** Zhipu AutoGLM — the only platform with browser automation, can log into restricted platforms
+
+**When deep analysis is also needed:** Zhipu AutoGLM (data acquisition) + Kimi (deep analysis)
+
+### Rule F: Ultra-Long Document Analysis
+
+> Legal contracts, medical records, industrial logs
+
+**Top pick:** MiniMax Agent Pro — 4M token context
+
+### Rule G: Sentiment Analysis
+
+**Twitter/X:** Grok (if unsubscribed, consider a temp subscription or use Perplexity as substitute)
+**Chinese social platforms:** Zhipu AutoGLM
+**Comprehensive sentiment:** combined approach
+
+### Rule H: Mixed / Other
+
+Match by the most critical requirement dimension — prioritize the core need, then layer on combination strategies.
+
+If the task involves both coding + research → use `/dispatch` for the coding tool + `/research` for the research platform.
 
 ---
 
-## 五、升级与替代
+## 4. Combination Strategies
 
-当首选平台结果不满意时：
-```
-智谱沉思深度不够 → 升级到 Kimi-Researcher
-Gemini 细节不够 → 升级到 ChatGPT DR
-Perplexity 深度不够 → 升级到 ChatGPT DR 或 Gemini
-单平台不够 → 启用组合策略
-```
+### English Deep Research Combination
 
-当月度额度紧张时（仅作参考）：
+| Role | Platform | Purpose |
+|------|----------|---------|
+| Primary | ChatGPT DR | Deep report |
+| Validation | Perplexity | Citation verification |
+| Framework | Gemini | Strategic supplement + Google Docs export |
+
+### Chinese Deep Research Combination
+
+| Role | Platform | Purpose |
+|------|----------|---------|
+| Primary | Kimi-Researcher | Deep analysis (highest Chinese quality) |
+| Data | Zhipu AutoGLM | Walled-garden platform data extraction |
+| Quick lookup | Metaso AI | Fast retrieval + mind map visualization |
+
+### Mixed Chinese-English Combination
+
+| Role | Platform | Purpose |
+|------|----------|---------|
+| English primary | ChatGPT DR | Deep mining of English sources |
+| Chinese primary | Kimi or Zhipu AutoGLM | Chinese source coverage |
+| Validation | Perplexity | Cross-checking critical claims |
+
+---
+
+## 5. Escalation & Substitution
+
+When the primary platform's results are unsatisfactory:
 ```
-ChatGPT Plus 额度紧张 → 非关键英文任务用 Gemini 承担
-Kimi 额度紧张 → 智谱沉思 + 秘塔 AI 组合替代
+Zhipu AutoGLM not deep enough → escalate to Kimi-Researcher
+Gemini lacks detail → escalate to ChatGPT DR
+Perplexity lacks depth → escalate to ChatGPT DR or Gemini
+Single platform insufficient → enable combination strategy
 ```
 
----
-
-## 六、联网验证指南
-
-### 何时搜索
-1. 用户提到具体研究主题 → 搜索最新进展，辅助判断研究难度
-2. 涉及时效性强的领域 → 确认信息是否过时
-3. 不确定某平台最新功能/限制 → 快速搜索确认
+When monthly quota is tight (advisory only):
+```
+ChatGPT Plus quota tight → non-critical English tasks handled by Gemini
+Kimi quota tight → Zhipu AutoGLM + Metaso AI combination as substitute
+```
 
 ---
 
-## 七、输出检查清单
+## 6. Live Verification Guide
 
-- [ ] 推荐基于能力适配，不是成本考量
-- [ ] 给出了可直接复制的建议 prompt
-- [ ] 标注了预估耗时
-- [ ] 提供了组合策略（如适用）
-- [ ] 给出了备选/升级方案
-- [ ] 提醒了关键注意事项（幻觉/引用核实）
-- [ ] 联网验证已执行（如需要）
+### When to search
+1. User mentions a specific research topic → search for latest developments to gauge research difficulty
+2. Time-sensitive domain → confirm whether information is outdated
+3. Uncertain about a platform's latest features/limits → quick search to confirm
+
+---
+
+## 7. Output Checklist
+
+- [ ] Recommendation is based on capability fit, not cost
+- [ ] Provided a ready-to-copy suggested prompt
+- [ ] Noted estimated duration
+- [ ] Provided combination strategy (if applicable)
+- [ ] Gave alternative / escalation plan
+- [ ] Reminded about key caveats (hallucination / citation verification)
+- [ ] Live verification executed (if needed)

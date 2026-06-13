@@ -1,35 +1,35 @@
 # giasip-skills
 
-> ✦ GiaSip 的 [Claude Code](https://claude.com/claude-code) 自定义技能集 · github.com/GiaSip
+> Custom [Claude Code](https://claude.com/claude-code) skills by GiaSip &middot; github.com/GiaSip
 
-| 技能 | 说明 |
-|------|------|
-| **giasip-research** | 研究调度 — 先用 SubAgent 快速侦察（Quick Recon）摸清方向和知识缺口，再决定是否升级到外部 Deep Research 平台。内置两轮 Recon、Claim Ledger 质控、独立 fact-check 协议，让外部平台只处理真正需要深挖的盲点。 |
-| **giasip-dispatch** | 多模型调用器 — 把任务或 prompt 一键派发给其他 AI 模型（Codex / Gemini / Kimi / DeepSeek / 豆包 / Qwen / GLM / MiniMax）执行并取回结果。纯调用器形态，不内置选型偏好（选哪个模型、单派多派交给你自己的 Claude 临场判断）。 |
+| Skill | Description |
+|-------|-------------|
+| **giasip-research** | Research orchestrator — runs a Quick Recon with SubAgents first to map the landscape and knowledge gaps, then decides whether to escalate to an external Deep Research platform. Built-in two-round Recon, Claim Ledger quality gate, and independent fact-check protocol ensure external platforms only handle what truly needs deep digging. |
+| **giasip-dispatch** | Multi-model dispatcher — sends a task or prompt to other AI models (Codex / Gemini / Kimi / DeepSeek / Doubao / Qwen / GLM / MiniMax) and retrieves results. Pure dispatcher — no built-in model preference; which model to use and whether to fan out is left to your Claude's judgment. |
 
-## 安装
+## Installation
 
-### 方式一：`npx skills add`（推荐，一行装）
+### Option 1: `npx skills add` (recommended, one-liner)
 
 ```bash
-# 安装全部技能（全局，装到 ~/.claude/skills/）
+# Install all skills globally (to ~/.claude/skills/)
 npx skills add GiaSip/giasip-skills -g --all
 
-# 只装某一个
+# Install a single skill
 npx skills add GiaSip/giasip-skills -g --skill giasip-research
 
-# 先看看仓库里有哪些技能
+# List available skills in this repo
 npx skills add GiaSip/giasip-skills -l
 ```
 
-### 方式二：作为 Claude Code plugin
+### Option 2: Claude Code plugin
 
 ```
 /plugin marketplace add GiaSip/giasip-skills
 /plugin install giasip-skills@giasip-skills
 ```
 
-### 方式三：git clone
+### Option 3: git clone
 
 ```bash
 git clone https://github.com/GiaSip/giasip-skills
@@ -37,49 +37,53 @@ cp -R giasip-skills/skills/giasip-research ~/.claude/skills/giasip-research
 cp -R giasip-skills/skills/giasip-dispatch ~/.claude/skills/giasip-dispatch
 ```
 
-> 三种装法触发命令都是 `/giasip-research`、`/giasip-dispatch`（署名焊在技能名上，不依赖安装方式），也可直接描述意图（如「帮我调研一下…」「用 Kimi 跑一下…」）自动触发。脚本路径用 `${CLAUDE_SKILL_DIR}` 自动定位，装在 `~/.claude/skills/` 还是 plugin 缓存目录都能正确解析。
+> All three methods register the same slash commands: `/giasip-research` and `/giasip-dispatch`. You can also trigger them by describing your intent (e.g., "research X for me" or "run this with Kimi"). Scripts use `${CLAUDE_SKILL_DIR}` for path resolution, so they work whether installed under `~/.claude/skills/` or in a plugin cache directory.
 
 ---
 
-## giasip-research — 依赖
+## giasip-research — Dependencies
 
-**基本零外部依赖，开箱即用**——主要用 Claude Code 自带的 WebSearch / WebFetch / SubAgent（WebFetch 遇 JS 渲染页面时可选用 Firecrawl 作 fallback，非必需）。
+**Near-zero external dependencies — works out of the box.** Primarily uses Claude Code's built-in WebSearch / WebFetch / SubAgent. (Firecrawl can optionally serve as a fallback when WebFetch hits JS-rendered pages, but is not required.)
 
-唯一需配置：`skills/giasip-research/platform-profiles.md` 里有一张「平台可用性」表，按你实际订阅的 Deep Research 平台（ChatGPT / Gemini / Perplexity / Kimi 等）填 ✅/❌，匹配逻辑会据此跳过未订阅的平台。
+The only setup needed: fill in the platform availability table in `skills/giasip-research/platform-profiles.md` with your actual Deep Research subscriptions (ChatGPT / Gemini / Perplexity / Kimi, etc.) — the matching logic uses this to skip unsubscribed platforms.
 
-## giasip-dispatch — 依赖
+## giasip-dispatch — Dependencies
 
-两类调用通道，按需配置：
+Two types of dispatch channels; configure what you need:
 
-### 1. API 直调（只需 API key，最快）
+### 1. API direct call (just needs an API key — fastest)
 
-支持 DeepSeek / Qwen / GLM / 豆包 / MiniMax。在 `~/.config/ai-keys/` 放对应 `.env` 文件：
+Supports DeepSeek / Qwen / GLM / Doubao / MiniMax. Place the corresponding `.env` file in `~/.config/ai-keys/`:
 
-| 模型 | 文件 | 内容 |
-|------|------|------|
+| Model | File | Content |
+|-------|------|---------|
 | DeepSeek | `deepseek.env` | `export DEEPSEEK_API_KEY=...` |
-| Qwen（通义） | `dashscope.env` | `export DASHSCOPE_API_KEY=...` |
-| GLM（智谱） | `zai.env` | `export ZAI_API_KEY=...` |
-| 豆包（火山引擎） | `volcengine.env` | `export ARK_API_KEY=...` |
+| Qwen (Tongyi) | `dashscope.env` | `export DASHSCOPE_API_KEY=...` |
+| GLM (Zhipu) | `zai.env` | `export ZAI_API_KEY=...` |
+| Doubao (Volcengine) | `volcengine.env` | `export ARK_API_KEY=...` |
 | MiniMax | `minimax.env` | `export MINIMAX_API_KEY=...` |
 
-测试：`${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "你好"`
+Test: `${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "Hello"`
 
-> 具体模型名（如 `deepseek-v4-pro`）写在 `api-dispatch.sh` 的 `case` 分支里，会随厂商版本更新——跑不通时去脚本里改 `MODEL_ID`。
+> Specific model names (e.g., `deepseek-v4-pro`) are defined in the `case` branches of `api-dispatch.sh` and may change as vendors release new versions — update `MODEL_ID` in the script if a call fails.
 
-### 2. CLI 调用（需本地装并登录对应 CLI）
+### 2. CLI invocation (requires local install + login)
 
-| 模型 | 安装 | 登录 |
-|------|------|------|
-| Codex | `npm i -g @openai/codex` | ChatGPT 账号 |
-| Gemini | `npm i -g @google/gemini-cli` | Google 账号 |
-| Kimi | `uv tool install kimi-cli`（或仅用 API key） | kimi.com / Moonshot key |
+| Model | Install | Auth |
+|-------|---------|------|
+| Codex | `npm i -g @openai/codex` | ChatGPT account |
+| Gemini | `npm i -g @google/gemini-cli` | Google account |
+| Kimi | `uv tool install kimi-cli` (or API key only) | kimi.com / Moonshot key |
 
-依赖检查：`command -v codex gemini kimi node curl python3 jq`
+Dependency check: `command -v codex gemini kimi node curl python3 jq`
 
-> 所有脚本通过 `source ~/.config/ai-keys/*.env` 读取 key，**密钥只在你本地，不在本仓库**。
+> All scripts read keys via `source ~/.config/ai-keys/*.env` — **your keys stay local and are never in this repo**.
 
 ---
+
+## Chinese version
+
+A Chinese version of all documentation is available under [`locales/zh/`](locales/zh/).
 
 ## License
 
