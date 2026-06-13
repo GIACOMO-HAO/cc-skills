@@ -2,7 +2,7 @@
   "name": "giasip-skills",
   "displayName": "GiaSip Skills",
   "description": "GiaSip's personal Claude Code skills for research & multi-model dispatch.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": {
     "name": "GiaSip",
     "url": "https://github.com/GiaSip"
@@ -13,7 +13,7 @@
     {
       "name": "giasip-skills",
       "description": "Research orchestration & multi-model dispatch skills.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "source": "./"
     }
   ]

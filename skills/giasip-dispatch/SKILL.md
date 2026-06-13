@@ -1,6 +1,12 @@
 ---
 name: giasip-dispatch
-description: "Multi-model dispatcher — sends a task or prompt to other AI models (Codex / Gemini / Kimi / DeepSeek / Doubao / Qwen / GLM / MiniMax) and retrieves results. Triggers when you want to run a task on a specific model, need multi-model cross-validation, or want to use a cheaper model. Trigger signals: “run this with Kimi/Codex/Gemini”, “hand this to another AI”, “try a different model”, “get multiple models’ takes”, “this doesn’t need the most expensive model”."
+version: 1.2.0
+description: “Multi-model dispatcher — sends a task or prompt to other AI models (Codex / Gemini / Kimi / DeepSeek / Doubao / Qwen / GLM / MiniMax) and retrieves results. Triggers when you want to run a task on a specific model, need multi-model cross-validation, or want to use a cheaper model. Trigger signals: “run this with Kimi/Codex/Gemini”, “hand this to another AI”, “try a different model”, “get multiple models’ takes”, “this doesn’t need the most expensive model”.”
+author: GiaSip <https://github.com/GiaSip>
+license: MIT
+compatibility:
+  - claude-code
+  - codex
 ---
 
 > ✦ A **GiaSip** skill · part of the `giasip` toolkit · github.com/GiaSip
@@ -29,6 +35,51 @@ Sends a task or prompt to another AI model for execution and retrieves the resul
 
 ---
 
+## Complexity Routing
+
+Automatically select the dispatch strategy based on task nature:
+
+```
+Visual task? (PDF catalog / scanned doc / screenshot / image parsing)
+├── Yes → [Gemini CLI] — native PDF + image visual analysis
+│   Trigger: user provides image/PDF path + task involves "reading" content;
+│   or markitdown output is empty/abnormally small
+│   → Do NOT try markitdown first — route directly to Gemini
+│
+├── Pure thinking/analysis (business analysis, strategy, text understanding, translation)
+│   → [API direct call] — no agent capability needed, curl the API directly
+│   10x faster; supports models without CLI (DeepSeek/Qwen/GLM etc.)
+│
+├── Simple + reversible (install packages, format, search, generate templates)
+│   → [Single dispatch] — prefer Claude SubAgent (Haiku) for speed
+│   Use external CLI only when the task needs Chinese-native or specific AI capabilities
+│
+├── Code execution (bug fix, write tests, small refactor, generate code files)
+│   → [Codex write mode] — sandbox=full, Codex modifies code directly
+│   Condition: clear task, in a git-managed project, controllable blast radius
+│   Always remind user to `git diff` afterward
+│
+├── Medium complexity (feature dev, document analysis, code analysis)
+│   → [Single dispatch] — send to the best-fit AI
+│
+├── Complex + irreversible (architecture design, tech selection, major refactor)
+│   → [Multi-dispatch] — auto-escalate, send to 2-3 AIs, compare outputs
+│
+└── User specifies AI ("run this with Kimi")
+    → [Direct assignment] — send to specified AI, skip matching
+```
+
+**Multi-dispatch triggers** (any one auto-escalates):
+- User says "important", "critical decision", "can't be wrong"
+- Task involves irreversible operations (database migration, production deployment)
+- Task is tech selection or architecture design
+- Estimated blast radius > 10 files or 3 modules
+- Chinese business/strategic analysis tasks (default: three-way parallel)
+
+→ See `references/model-roster.md` for multi-dispatch lineup recommendations by task type.
+
+---
+
 ## Dispatch Methods
 
 ### API Direct Call (DeepSeek / Qwen / GLM / Doubao / MiniMax)
@@ -48,17 +99,17 @@ Long text via stdin:
 echo "long text content" | ${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model <model> --stdin
 ```
 
-Supported models (parameters / key files / endpoints needed for invocation — model names evolve with vendor updates):
+Supported models — see `references/model-roster.md` for the full roster with per-model strengths and multi-dispatch lineup recommendations.
 
-| Parameter | Model | Key File | Context | API Endpoint |
-|-----------|-------|----------|---------|-------------|
-| `deepseek` | DeepSeek (thinking mode on by default) | `deepseek.env` | 1M | api.deepseek.com |
-| `qwen` | Tongyi Qwen Plus | `dashscope.env` | 1M | dashscope.aliyuncs.com (compat mode) |
-| `glm` | Zhipu GLM | `zai.env` | 200K | open.bigmodel.cn |
-| `doubao` | ByteDance Doubao Seed | `volcengine.env` | 256K | ark.cn-beijing.volces.com |
-| `minimax` | MiniMax | `minimax.env` | — | api.minimax.io |
+| Parameter | Model | Key File | Context |
+|-----------|-------|----------|---------|
+| `deepseek` | DeepSeek V4-Pro (thinking mode on) | `deepseek.env` | 1M |
+| `qwen` | Qwen3.6 Plus (Tongyi) | `dashscope.env` | 1M |
+| `glm` | GLM-5.1 (Zhipu flagship) | `zai.env` | 200K |
+| `doubao` | Doubao Seed-2.0 Pro (ByteDance) | `volcengine.env` | 256K |
+| `minimax` | MiniMax M2.7 | `minimax.env` | — |
 
-> See README for `.env` file formats. Model names (e.g., `deepseek-v4-pro` / `doubao-seed-2-0-pro-260215`) change with version updates — check vendor docs before calling.
+> Model names evolve with vendor updates — check vendor docs before calling.
 
 ### Codex CLI (OpenAI) — App Server protocol, no cold start
 
@@ -131,6 +182,8 @@ Use cases: PDF catalogs (no text layer), scans, product datasheets, screenshot a
 
 ### Kimi CLI (Moonshot) — wrapper script recommended, auto endpoint routing
 
+> **Thinking model discipline**: Kimi K2.6 is a thinking model — reasoning can take minutes for complex prompts. **Bash timeout must be ≥600000** (10 min) for complex tasks. The script has built-in SSE streaming + idle guard (120s no-byte threshold) + 900s hard cap. Do NOT kill mid-run or substitute with hand-written curl. For fast mode: prefix `KIMI_NO_THINK=1` (injects `{"thinking":{"type":"disabled"}}`, ~4s response, but quality drops — only for non-reasoning tasks).
+
 ```bash
 # Default: Moonshot general endpoint (api.moonshot.cn/v1, MOONSHOT_API_KEY)
 ${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "$(cat <<'EOF'
@@ -140,6 +193,9 @@ EOF
 
 # Opt-in coding endpoint (Kimi CLI + api.kimi.com/coding/v1, KIMI_API_KEY)
 KIMI_FOR_CODING=1 ${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "prompt"
+
+# Fast mode (disable thinking, ~4s response)
+KIMI_NO_THINK=1 ${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "simple task"
 ```
 
 | Endpoint | Characteristics | Best for |
@@ -189,7 +245,8 @@ Selection principle: cognitive diversity > quantity — pick models with differe
 
 - **Bash timeout:**
   - Codex deep reasoning (xhigh): `600000` (10 minutes, Bash tool ceiling, aligned with script default 600s)
-  - Gemini / Kimi single dispatch: `240000` (4 minutes); multi-dispatch per route `300000` (5 minutes)
+  - Gemini single dispatch: `240000` (4 minutes); multi-dispatch per route `300000` (5 minutes)
+  - **Kimi (thinking model)**: single/multi-dispatch always `≥600000` (reasoning tail is long and unpredictable); only `KIMI_NO_THINK=1` fast mode can use `240000`
 - Single dispatch = one Bash call; multi-dispatch = multiple Bash calls fired in parallel
 - Codex uses App Server protocol with no cold start; xhigh deep reasoning typically takes 3-8 minutes
 - Gemini / Kimi use CLI headless mode; keep `2>/dev/null`
@@ -240,13 +297,32 @@ Primary channel fails (timeout / error)
 
 ---
 
+## Response Logging
+
+All dispatch scripts automatically persist **complete first-hand responses** to `~/.cache/dispatch/responses/<date>/<response_id>.md` (YAML frontmatter + prompt + response) and append to `~/.cache/dispatch/index.jsonl` (consumption entry point). This happens regardless of single/multi-dispatch mode — responses no longer depend on volatile /tmp or session logs.
+
+For multi-dispatch runs, set `DISPATCH_BATCH_ID` to group responses from the same batch:
+
+```bash
+batch_id="$(uuidgen)"
+DISPATCH_BATCH_ID="$batch_id" ${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "task" &
+DISPATCH_BATCH_ID="$batch_id" ${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "task" &
+wait
+```
+
+Implementation: see `${CLAUDE_SKILL_DIR}/scripts/dispatch-persist.mjs`.
+
+---
+
 ## Script Inventory
 
 | Script | Purpose |
 |--------|---------|
-| `${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh` | API direct call (DeepSeek / Qwen / GLM / Doubao / MiniMax) |
-| `${CLAUDE_SKILL_DIR}/scripts/codex-appserver.mjs` | Codex App Server protocol (read-only / write mode) |
-| `${CLAUDE_SKILL_DIR}/scripts/gemini-supervisor.sh` | Gemini CLI + retry / fallback / circuit breaker |
-| `${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh` | Kimi dispatch + endpoint routing + API fallback |
+| `api-dispatch.sh` | API direct call (DeepSeek / Qwen / GLM / Doubao / MiniMax) |
+| `codex-appserver.mjs` | Codex App Server protocol (read-only / write mode) |
+| `gemini-supervisor.sh` | Gemini CLI + retry / fallback / circuit breaker |
+| `kimi-dispatch.sh` | Kimi dispatch + endpoint routing + thinking mode control |
+| `dispatch-persist.mjs` | Response logging — auto-persists dispatch results to disk |
+| `stop-review-gate.mjs` | Codex stop hook — gates on code review before stopping |
 
 > For installation, dependencies, and API key setup, see README.md.
