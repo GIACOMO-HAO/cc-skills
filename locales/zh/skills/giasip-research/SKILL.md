@@ -326,7 +326,7 @@ Reviewer 输入：
 
 > 仅在 Step 3 判定需要升级时执行。
 
-参考 `platform-profiles.md` 了解各平台能力，参考 `matching-rules.md` 执行匹配逻辑。
+参考 `references/platform-profiles.md` 了解各平台能力，参考 `references/matching-rules.md` 执行匹配逻辑。
 
 核心思路：找到任务最关键的 1-2 个需求维度，匹配该维度上能力最强的平台。不要因为某个平台"免费"或"便宜"就优先推荐——选最擅长的。
 
@@ -420,5 +420,7 @@ Reviewer 输入：
 
 ## 详细参考
 
-- `platform-profiles.md` — 各 Deep Research 平台能力档案
-- `matching-rules.md` — 平台匹配逻辑与决策树
+- `references/platform-profiles.md` — 各 Deep Research 平台能力档案
+- `references/matching-rules.md` — 平台匹配逻辑与决策树
+- `references/fact-check-protocol.md` — Fact-check 协议（v2.2+v2.4）+ Mini Assurance 审计
+- `references/subagent-templates.md` — SubAgent 指令模板 + 单位 sanity check
