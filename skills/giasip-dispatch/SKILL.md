@@ -1,12 +1,10 @@
 ---
 name: giasip-dispatch
 version: 1.2.0
-description: “Multi-model dispatcher — sends a task or prompt to other AI models (Codex / Gemini / Kimi / DeepSeek / Doubao / Qwen / GLM / MiniMax) and retrieves results. Triggers when you want to run a task on a specific model, need multi-model cross-validation, or want to use a cheaper model. Trigger signals: “run this with Kimi/Codex/Gemini”, “hand this to another AI”, “try a different model”, “get multiple models’ takes”, “this doesn’t need the most expensive model”.”
+description: “Multi-model dispatcher -- sends a task or prompt to other AI models (Codex / Gemini / Kimi / DeepSeek / Doubao / Qwen / GLM / MiniMax) and retrieves results. Triggers when you want to run a task on a specific model, need multi-model cross-validation, or want to use a cheaper model.”
 author: GiaSip <https://github.com/GiaSip>
 license: MIT
-compatibility:
-  - claude-code
-  - codex
+compatibility: claude-code, codex
 ---
 
 > ✦ A **GiaSip** skill · part of the `giasip` toolkit · github.com/GiaSip
@@ -299,7 +297,7 @@ Primary channel fails (timeout / error)
 
 ## Response Logging
 
-All dispatch scripts automatically persist **complete first-hand responses** to `~/.cache/dispatch/responses/<date>/<response_id>.md` (YAML frontmatter + prompt + response) and append to `~/.cache/dispatch/index.jsonl` (consumption entry point). This happens regardless of single/multi-dispatch mode — responses no longer depend on volatile /tmp or session logs.
+Use `dispatch-persist.mjs` to persist **complete first-hand responses** to `~/.cache/dispatch/responses/YYYY/MM/DD/<response_id>.md` (YAML frontmatter + prompt + response) and append to `~/.cache/dispatch/index.jsonl` (consumption entry point). Pipe dispatch output to this script, or hook it into your dispatch scripts to avoid losing responses to volatile /tmp or session logs.
 
 For multi-dispatch runs, set `DISPATCH_BATCH_ID` to group responses from the same batch:
 

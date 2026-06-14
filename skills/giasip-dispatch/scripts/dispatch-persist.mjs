@@ -81,8 +81,8 @@ async function main() {
   ].join("\n");
   const artPath = join(artDir, `${responseId}.md`);
   try {
-    mkdirSync(artDir, { recursive: true });
-    try { writeFileSync(artPath, fm, { flag: "wx" }); } catch { writeFileSync(artPath, fm); }
+    mkdirSync(artDir, { recursive: true, mode: 0o700 });
+    try { writeFileSync(artPath, fm, { flag: "wx", mode: 0o600 }); } catch { writeFileSync(artPath, fm, { mode: 0o600 }); }
   } catch { /* best effort */ }
 
   // ── append index.jsonl (consumption entry point; stores preview+meta only, no markdown scan) ──

@@ -4,9 +4,7 @@ version: 1.2.0
 description: 多模型调用器 — 把任务或 prompt 派发给其他 AI 模型（Codex / Gemini / Kimi / DeepSeek / 豆包 / Qwen / GLM / MiniMax）执行并取回结果。当你想用某个或某几个其他模型跑任务、需要多模型交叉对比验证、或想用更便宜的模型省钱时触发。提供两类调用通道：API 直调（只需 API key）和 CLI 调用（需本地装对应 CLI）。触发信号：「用 Kimi/Codex/Gemini 跑一下」「交给其他 AI」「换个模型试试」「让几个模型都看看」「这个不用最贵的模型」。
 author: GiaSip <https://github.com/GiaSip>
 license: MIT
-compatibility:
-  - claude-code
-  - codex
+compatibility: claude-code, codex
 ---
 
 > ✦ A **GiaSip** skill · part of the `giasip` toolkit · github.com/GiaSip
@@ -299,7 +297,7 @@ wait
 
 ## 回答持久化
 
-所有 dispatch 脚本自动将**完整一手回答**持久化到 `~/.cache/dispatch/responses/<日期>/<response_id>.md`（YAML frontmatter + prompt + response），并追加到 `~/.cache/dispatch/index.jsonl`（消费入口）。无论单派/多派，回答不再依赖易失的 /tmp 或 session 日志。
+使用 `dispatch-persist.mjs` 将**完整一手回答**持久化到 `~/.cache/dispatch/responses/YYYY/MM/DD/<response_id>.md`（YAML frontmatter + prompt + response），并追加到 `~/.cache/dispatch/index.jsonl`（消费入口）。将 dispatch 输出 pipe 给此脚本，或将其 hook 进 dispatch 脚本，避免回答随 /tmp 或 session 日志丢失。
 
 多派时设置 `DISPATCH_BATCH_ID` 将同批回答归组：
 

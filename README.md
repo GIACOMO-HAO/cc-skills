@@ -10,7 +10,7 @@
 | Skill | Description |
 |-------|-------------|
 | **giasip-research** | Research orchestrator — runs a Quick Recon with SubAgents first to map the landscape and knowledge gaps, then decides whether to escalate to an external Deep Research platform. Built-in two-round Recon, Claim Ledger quality gate, and independent fact-check protocol ensure external platforms only handle what truly needs deep digging. |
-| **giasip-dispatch** | Multi-model dispatcher — sends a task or prompt to other AI models (Codex / Gemini / Kimi / DeepSeek / Doubao / Qwen / GLM / MiniMax) and retrieves results. Auto-selects dispatch strategy via complexity routing. Pure dispatcher — no built-in model preference; which model to use and whether to fan out is left to your Claude's judgment. |
+| **giasip-dispatch** | Multi-model dispatcher — sends a task or prompt to other AI models (Codex / Gemini / Kimi / DeepSeek / Doubao / Qwen / GLM / MiniMax) and retrieves results. Includes complexity routing guidelines to help pick the right dispatch strategy (API vs CLI vs SubAgent, single vs multi), but the final model choice is left to your Claude's judgment. |
 
 ## Skill Structure
 
@@ -134,13 +134,13 @@ Dependency check: `command -v codex gemini kimi node curl python3 jq`
 
 | File | Description |
 |------|-------------|
-| `references/platform-profiles.md` | Deep Research platform capability cards (speed/quality/context ratings) |
-| `references/matching-rules.md` | Platform matching decision tree (language routing, special requirements) |
-| `references/fact-check-protocol.md` | Independent fact-check protocol with cross-faction discipline |
-| `references/subagent-templates.md` | SubAgent instruction templates with ClaimCard schema |
-| `references/model-roster.md` | Model roster with per-model strengths and multi-dispatch lineups |
-| `scripts/dispatch-persist.mjs` | Auto-persists dispatch responses to `~/.cache/dispatch/` |
-| `scripts/stop-review-gate.mjs` | Claude Code stop hook — gates on Codex code review |
+| `skills/giasip-research/references/platform-profiles.md` | Deep Research platform capability cards (speed/quality/context ratings) |
+| `skills/giasip-research/references/matching-rules.md` | Platform matching decision tree (language routing, special requirements) |
+| `skills/giasip-research/references/fact-check-protocol.md` | Independent fact-check protocol with cross-faction discipline |
+| `skills/giasip-research/references/subagent-templates.md` | SubAgent instruction templates with ClaimCard schema |
+| `skills/giasip-dispatch/references/model-roster.md` | Model roster with per-model strengths and multi-dispatch lineups |
+| `skills/giasip-dispatch/scripts/dispatch-persist.mjs` | Persists dispatch responses to `~/.cache/dispatch/` (call explicitly or hook into dispatch scripts) |
+| `skills/giasip-dispatch/scripts/stop-review-gate.mjs` | Claude Code stop hook — advisory Codex code review gate |
 
 ## Chinese version
 

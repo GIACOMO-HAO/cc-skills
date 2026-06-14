@@ -4,9 +4,7 @@ version: 1.2.0
 description: "Research orchestrator: runs a Quick Recon with SubAgents to map the landscape and knowledge gaps, then decides whether to escalate to an external Deep Research platform. Saves Deep Research quota by ensuring external platforms only handle what truly needs deep digging. Triggers on deep research, competitive analysis, market research, academic search, industry reports. Trigger signals: \"research X for me\", \"investigate\", \"deep analysis\", \"find materials on\", \"look into the XX market/industry\". Especially suited for complex research requiring multi-platform cross-validation. Even a simple question needing verification should trigger this skill to determine the best research path."
 author: GiaSip <https://github.com/GiaSip>
 license: MIT
-compatibility:
-  - claude-code
-  - codex
+compatibility: claude-code, codex
 ---
 
 > ✦ A **GiaSip** skill · part of the `giasip` toolkit · github.com/GiaSip
@@ -176,7 +174,7 @@ When "hallucination tolerance = extremely low + citation requirement = academic-
 
 > Only executed when Step 3 determines escalation is needed.
 
-Refer to `platform-profiles.md` for each platform's capabilities; refer to `matching-rules.md` for matching logic.
+Refer to `references/platform-profiles.md` for each platform's capabilities; refer to `references/matching-rules.md` for matching logic.
 
 Core approach: identify the task's 1-2 most critical requirement dimensions, match the platform strongest on those dimensions. Don't prioritize a platform because it's "free" or "cheap" — pick the most capable.
 
