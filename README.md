@@ -3,9 +3,10 @@
 ![Version](https://img.shields.io/badge/version-1.2.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Claude Code](https://img.shields.io/badge/claude--code-compatible-orange)
-![Codex](https://img.shields.io/badge/codex-compatible-purple)
 
 > Custom [Claude Code](https://claude.com/claude-code) skills by GiaSip &middot; github.com/GiaSip
+>
+> *Claude Code-native. A vendor-neutral portable-playbook version (usable from Codex and other agents) is maintained separately.*
 
 | Skill | Description |
 |-------|-------------|
@@ -67,7 +68,7 @@ cp -R giasip-skills/skills/giasip-research ~/.claude/skills/giasip-research
 cp -R giasip-skills/skills/giasip-dispatch ~/.claude/skills/giasip-dispatch
 ```
 
-> All three methods register the same slash commands: `/giasip-research` and `/giasip-dispatch`. You can also trigger them by describing your intent (e.g., "research X for me" or "run this with Kimi"). Scripts use `${CLAUDE_SKILL_DIR}` for path resolution, so they work whether installed under `~/.claude/skills/` or in a plugin cache directory.
+> All three methods register the same slash commands: `/giasip-research` and `/giasip-dispatch`. You can also trigger them by describing your intent (e.g., "research X for me" or "run this with Kimi"). The dispatch scripts live in the skill's own `scripts/` subdirectory; the dispatch SKILL.md has the agent set `BASE_DIR` to that directory once at the start of a session, so the script calls work whether installed under `~/.claude/skills/` or in a plugin cache directory.
 
 ---
 
@@ -112,7 +113,7 @@ Supports DeepSeek / Qwen / GLM / Doubao / MiniMax. Place the corresponding `.env
 | Doubao (Volcengine) | `volcengine.env` | `export ARK_API_KEY=...` |
 | MiniMax | `minimax.env` | `export MINIMAX_API_KEY=...` |
 
-Test: `${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "Hello"`
+Test (adjust the path to your install location — e.g. a global install): `~/.claude/skills/giasip-dispatch/scripts/api-dispatch.sh --model deepseek "Hello"`
 
 > Specific model names (e.g., `deepseek-v4-pro`) are defined in the `case` branches of `api-dispatch.sh` and may change as vendors release new versions — update `MODEL_ID` in the script if a call fails. See `references/model-roster.md` for the current roster.
 
@@ -124,7 +125,11 @@ Test: `${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "Hello"`
 | Gemini | `npm i -g @google/gemini-cli` | Google account |
 | Kimi | `uv tool install kimi-cli` (or API key only) | kimi.com / Moonshot key |
 
-Dependency check: `command -v codex gemini kimi node curl python3 jq`
+Dependency check: `command -v codex gemini kimi node curl python3 jq perl`
+
+> **Kimi has two backends.** The default `kimi-dispatch.sh` calls the **Moonshot API** directly (it's really an API channel, not CLI) — needs `~/.config/ai-keys/kimi-moonshot.env` containing `MOONSHOT_API_KEY`, no `kimi` CLI required. Adding `KIMI_FOR_CODING=1` switches to the **Kimi CLI** coding endpoint — that path needs the `kimi` CLI installed *plus* `~/.config/ai-keys/kimi.env` containing `KIMI_API_KEY`.
+>
+> **`perl` is required** by the Gemini and Kimi wrappers for portable timeout control — preinstalled on macOS, but install it on minimal Linux images.
 
 > All scripts read keys via `source ~/.config/ai-keys/*.env` — **your keys stay local and are never in this repo**.
 

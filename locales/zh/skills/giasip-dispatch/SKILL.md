@@ -4,7 +4,7 @@ version: 1.2.0
 description: 多模型调用器 — 把任务或 prompt 派发给其他 AI 模型（Codex / Gemini / Kimi / DeepSeek / 豆包 / Qwen / GLM / MiniMax）执行并取回结果。当你想用某个或某几个其他模型跑任务、需要多模型交叉对比验证、或想用更便宜的模型省钱时触发。提供两类调用通道：API 直调（只需 API key）和 CLI 调用（需本地装对应 CLI）。触发信号：「用 Kimi/Codex/Gemini 跑一下」「交给其他 AI」「换个模型试试」「让几个模型都看看」「这个不用最贵的模型」。
 author: GiaSip <https://github.com/GiaSip>
 license: MIT
-compatibility: claude-code, codex
+compatibility: claude-code
 ---
 
 > ✦ A **GiaSip** skill · part of the `giasip` toolkit · github.com/GiaSip
@@ -12,6 +12,19 @@ compatibility: claude-code, codex
 # /dispatch — 多模型调用器
 
 把一个任务或 prompt 派发给其他 AI 模型执行，取回结果。这个 skill **只提供调用能力**——选哪个模型、单派还是多派，由你（或当前的 Claude）根据任务临场判断，本 skill 不内置选型偏好。
+
+## 脚本目录（Script Directory）
+
+**重要**：所有脚本都在**本 skill 目录**下的 `scripts/` 子目录里。
+
+**Agent 准备 —— 跑下面任何命令前先做一次**：确定包含本 `SKILL.md` 的目录的绝对路径，export 为 `BASE_DIR`：
+
+```bash
+# 全局安装（最常见）；作为 plugin 安装时改用 plugin 缓存路径
+export BASE_DIR="$HOME/.claude/skills/giasip-dispatch"
+```
+
+下文所有命令都用 `$BASE_DIR/scripts/<脚本名>` 引用脚本。`BASE_DIR` 是**你自己**在 session 里设的 shell 变量——运行时**不存在** `CLAUDE_SKILL_DIR` 这个注入变量，所以必须先设 `BASE_DIR`，否则脚本路径会解析为空。
 
 ## 两类调用通道
 
@@ -85,7 +98,7 @@ compatibility: claude-code, codex
 不需要 Agent 能力的纯分析任务，直接调 API。通用脚本：
 
 ```bash
-${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model <model> "$(cat <<'EOF'
+$BASE_DIR/scripts/api-dispatch.sh --model <model> "$(cat <<'EOF'
 prompt 内容
 EOF
 )"
@@ -94,7 +107,7 @@ EOF
 长文本用 stdin：
 
 ```bash
-echo "长文本内容" | ${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model <model> --stdin
+echo "长文本内容" | $BASE_DIR/scripts/api-dispatch.sh --model <model> --stdin
 ```
 
 支持的模型 — 完整阵容及各模型强项见 `references/model-roster.md`。
@@ -114,7 +127,7 @@ echo "长文本内容" | ${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model <mo
 只读模式（分析 / review / 调研）：
 
 ```bash
-node ${CLAUDE_SKILL_DIR}/scripts/codex-appserver.mjs --effort xhigh "$(cat <<'EOF'
+node $BASE_DIR/scripts/codex-appserver.mjs --effort xhigh "$(cat <<'EOF'
 prompt 内容
 EOF
 )" </dev/null
@@ -123,7 +136,7 @@ EOF
 写模式（改代码 / 修 bug / 写测试 / 生成文件）：
 
 ```bash
-node ${CLAUDE_SKILL_DIR}/scripts/codex-appserver.mjs --effort xhigh --sandbox full "$(cat <<'EOF'
+node $BASE_DIR/scripts/codex-appserver.mjs --effort xhigh --sandbox full "$(cat <<'EOF'
 prompt 内容
 EOF
 )" </dev/null
@@ -138,14 +151,14 @@ EOF
 - `--sandbox` 默认 `read-only`；写模式用 `full`（脚本另支持 `workspace-write` / `danger-full-access` 等高级值）
 - 脚本已内置非 ASCII 路径自动 symlink 绕行（`--cwd` 含中文等字符时自动在 `/tmp` 建临时 symlink，退出清理）
 - 不要加 `2>/dev/null`——脚本在 stderr 输出结构化进度和错误信息
-- 长文本可用 stdin：`echo "长文本" | node ${CLAUDE_SKILL_DIR}/scripts/codex-appserver.mjs --stdin --effort xhigh`
+- 长文本可用 stdin：`echo "长文本" | node $BASE_DIR/scripts/codex-appserver.mjs --stdin --effort xhigh`
 
 ### Gemini CLI（Google）— 推荐走 supervisor 脚本
 
 supervisor 内置智能 retry / fallback chain / circuit breaker / timeout / 日志：
 
 ```bash
-${CLAUDE_SKILL_DIR}/scripts/gemini-supervisor.sh --cwd "/path/to/work/dir" "$(cat <<'PROMPT_END'
+$BASE_DIR/scripts/gemini-supervisor.sh --cwd "/path/to/work/dir" "$(cat <<'PROMPT_END'
 prompt 内容
 PROMPT_END
 )"
@@ -158,13 +171,13 @@ PROMPT_END
 - Circuit breaker：单模型连续 3 次失败进 30 分钟 cool-down
 - 日志 `~/.cache/dispatch/gemini.log`（JSONL）+ 状态 `~/.cache/dispatch/gemini-state.json`
 
-**指定单一模型（不走 fallback）：** `${CLAUDE_SKILL_DIR}/scripts/gemini-supervisor.sh --model <model-id> "prompt"`
-**stdin 模式（长 prompt 推荐）：** `cat prompt.txt | ${CLAUDE_SKILL_DIR}/scripts/gemini-supervisor.sh --stdin --cwd "/work/dir"`
+**指定单一模型（不走 fallback）：** `$BASE_DIR/scripts/gemini-supervisor.sh --model <model-id> "prompt"`
+**stdin 模式（长 prompt 推荐）：** `cat prompt.txt | $BASE_DIR/scripts/gemini-supervisor.sh --stdin --cwd "/work/dir"`
 
 **Gemini 视觉 / PDF 解析**（Gemini 原生支持 PDF + 图片视觉解析，是处理无文字层 PDF / 截图的标准路径）：
 
 ```bash
-${CLAUDE_SKILL_DIR}/scripts/gemini-supervisor.sh \
+$BASE_DIR/scripts/gemini-supervisor.sh \
   --cwd "/path/to/files/dir" \
   "$(cat <<'PROMPT_END'
 请完整解析 xxx.pdf 的所有页面内容，输出 markdown 格式：
@@ -184,16 +197,16 @@ PROMPT_END
 
 ```bash
 # 默认：走 Moonshot 通用 endpoint（api.moonshot.cn/v1, MOONSHOT_API_KEY）
-${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "$(cat <<'EOF'
+$BASE_DIR/scripts/kimi-dispatch.sh "$(cat <<'EOF'
 prompt 内容
 EOF
 )"
 
 # Opt-in coding endpoint（kimi CLI + api.kimi.com/coding/v1, KIMI_API_KEY）
-KIMI_FOR_CODING=1 ${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "prompt"
+KIMI_FOR_CODING=1 $BASE_DIR/scripts/kimi-dispatch.sh "prompt"
 
 # 快速模式（禁用 thinking，~4s 响应）
-KIMI_NO_THINK=1 ${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "简单任务"
+KIMI_NO_THINK=1 $BASE_DIR/scripts/kimi-dispatch.sh "简单任务"
 ```
 
 | Endpoint | 特点 | 适合 |
@@ -229,9 +242,9 @@ ls ~/.config/ai-keys/*.env 2>/dev/null
 
 ```bash
 # 三路并行示例（同一 prompt 发给三个模型）
-${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "分析任务" &
-${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "分析任务" &
-${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model doubao "分析任务" &
+$BASE_DIR/scripts/kimi-dispatch.sh "分析任务" &
+$BASE_DIR/scripts/api-dispatch.sh --model deepseek "分析任务" &
+$BASE_DIR/scripts/api-dispatch.sh --model doubao "分析任务" &
 wait
 ```
 
@@ -303,12 +316,12 @@ wait
 
 ```bash
 batch_id="$(uuidgen)"
-DISPATCH_BATCH_ID="$batch_id" ${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "任务" &
-DISPATCH_BATCH_ID="$batch_id" ${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "任务" &
+DISPATCH_BATCH_ID="$batch_id" $BASE_DIR/scripts/kimi-dispatch.sh "任务" &
+DISPATCH_BATCH_ID="$batch_id" $BASE_DIR/scripts/api-dispatch.sh --model deepseek "任务" &
 wait
 ```
 
-实现细节见 `${CLAUDE_SKILL_DIR}/scripts/dispatch-persist.mjs`。
+实现细节见 `$BASE_DIR/scripts/dispatch-persist.mjs`。
 
 ---
 

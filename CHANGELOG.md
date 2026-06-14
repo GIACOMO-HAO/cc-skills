@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+- **dispatch script paths**: replaced the non-existent `${CLAUDE_SKILL_DIR}` env var — Claude Code does not inject it, so it resolved to an empty path and broke every `dispatch` script call on a fresh install — with a `BASE_DIR` shell variable the agent sets once at the start of a session.
+- README (en/zh) no longer claims script paths "resolve automatically"; the wording now matches the `BASE_DIR` convention in SKILL.md.
+
+### Changed
+- README (en/zh): documented Kimi's two backends — default `kimi-dispatch.sh` calls the Moonshot API (`kimi-moonshot.env` / `MOONSHOT_API_KEY`, no CLI) vs `KIMI_FOR_CODING=1` Kimi CLI endpoint (`kimi.env` / `KIMI_API_KEY`); added `perl` to the dependency list.
+- Removed misleading `codex` from `compatibility` frontmatter and the Codex README badge — these skills are Claude Code-native (a vendor-neutral portable playbook is maintained separately).
+- `.gitignore`: ignore `*.env` / `node_modules` / logs / `tmp/` to prevent committing API keys.
+
 ## [1.2.0] — 2026-06-13
 
 ### Changed

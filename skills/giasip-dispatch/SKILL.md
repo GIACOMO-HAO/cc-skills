@@ -4,7 +4,7 @@ version: 1.2.0
 description: “Multi-model dispatcher -- sends a task or prompt to other AI models (Codex / Gemini / Kimi / DeepSeek / Doubao / Qwen / GLM / MiniMax) and retrieves results. Triggers when you want to run a task on a specific model, need multi-model cross-validation, or want to use a cheaper model.”
 author: GiaSip <https://github.com/GiaSip>
 license: MIT
-compatibility: claude-code, codex
+compatibility: claude-code
 ---
 
 > ✦ A **GiaSip** skill · part of the `giasip` toolkit · github.com/GiaSip
@@ -12,6 +12,19 @@ compatibility: claude-code, codex
 # /dispatch — Multi-Model Dispatcher
 
 Sends a task or prompt to another AI model for execution and retrieves the result. This skill **only provides the dispatch capability** — which model to pick, whether to fan out to multiple models, is decided by you (or the current Claude) based on the task at hand. No built-in model preference.
+
+## Script Directory
+
+**Important**: All scripts live in the `scripts/` subdirectory of *this* skill folder.
+
+**Agent setup — do this ONCE before running any command below**: determine the absolute path of the directory that contains this `SKILL.md`, and export it as `BASE_DIR`:
+
+```bash
+# Global install (most common); use the plugin cache path instead if installed as a plugin
+export BASE_DIR="$HOME/.claude/skills/giasip-dispatch"
+```
+
+Every command below references scripts as `$BASE_DIR/scripts/<script-name>`. `BASE_DIR` is a shell variable **you** set in the session — there is **no** `CLAUDE_SKILL_DIR` environment variable injected by the runtime, so set `BASE_DIR` first or the script paths will resolve to nothing.
 
 ## Two Dispatch Channels
 
@@ -85,7 +98,7 @@ Visual task? (PDF catalog / scanned doc / screenshot / image parsing)
 For pure analysis tasks that don't need agent capabilities, call the API directly:
 
 ```bash
-${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model <model> "$(cat <<'EOF'
+$BASE_DIR/scripts/api-dispatch.sh --model <model> "$(cat <<'EOF'
 prompt content
 EOF
 )"
@@ -94,7 +107,7 @@ EOF
 Long text via stdin:
 
 ```bash
-echo "long text content" | ${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model <model> --stdin
+echo "long text content" | $BASE_DIR/scripts/api-dispatch.sh --model <model> --stdin
 ```
 
 Supported models — see `references/model-roster.md` for the full roster with per-model strengths and multi-dispatch lineup recommendations.
@@ -114,7 +127,7 @@ Supported models — see `references/model-roster.md` for the full roster with p
 Read-only mode (analysis / review / research):
 
 ```bash
-node ${CLAUDE_SKILL_DIR}/scripts/codex-appserver.mjs --effort xhigh "$(cat <<'EOF'
+node $BASE_DIR/scripts/codex-appserver.mjs --effort xhigh "$(cat <<'EOF'
 prompt content
 EOF
 )" </dev/null
@@ -123,7 +136,7 @@ EOF
 Write mode (code changes / bug fixes / test generation / file creation):
 
 ```bash
-node ${CLAUDE_SKILL_DIR}/scripts/codex-appserver.mjs --effort xhigh --sandbox full "$(cat <<'EOF'
+node $BASE_DIR/scripts/codex-appserver.mjs --effort xhigh --sandbox full "$(cat <<'EOF'
 prompt content
 EOF
 )" </dev/null
@@ -138,14 +151,14 @@ EOF
 - `--sandbox` defaults to `read-only`; write mode uses `full` (the script also supports `workspace-write` / `danger-full-access` for advanced use)
 - The script has built-in non-ASCII path auto-symlink workaround (`--cwd` with CJK characters auto-creates a temp symlink in `/tmp`, cleaned up on exit)
 - Do not add `2>/dev/null` — the script outputs structured progress and error info on stderr
-- Long text can use stdin: `echo "long text" | node ${CLAUDE_SKILL_DIR}/scripts/codex-appserver.mjs --stdin --effort xhigh`
+- Long text can use stdin: `echo "long text" | node $BASE_DIR/scripts/codex-appserver.mjs --stdin --effort xhigh`
 
 ### Gemini CLI (Google) — supervisor script recommended
 
 The supervisor has built-in smart retry / fallback chain / circuit breaker / timeout / logging:
 
 ```bash
-${CLAUDE_SKILL_DIR}/scripts/gemini-supervisor.sh --cwd "/path/to/work/dir" "$(cat <<'PROMPT_END'
+$BASE_DIR/scripts/gemini-supervisor.sh --cwd "/path/to/work/dir" "$(cat <<'PROMPT_END'
 prompt content
 PROMPT_END
 )"
@@ -158,13 +171,13 @@ PROMPT_END
 - Circuit breaker: 3 consecutive failures per model → 30-minute cool-down
 - Logs: `~/.cache/dispatch/gemini.log` (JSONL) + state: `~/.cache/dispatch/gemini-state.json`
 
-**Specify a single model (skip fallback):** `${CLAUDE_SKILL_DIR}/scripts/gemini-supervisor.sh --model <model-id> "prompt"`
-**stdin mode (recommended for long prompts):** `cat prompt.txt | ${CLAUDE_SKILL_DIR}/scripts/gemini-supervisor.sh --stdin --cwd "/work/dir"`
+**Specify a single model (skip fallback):** `$BASE_DIR/scripts/gemini-supervisor.sh --model <model-id> "prompt"`
+**stdin mode (recommended for long prompts):** `cat prompt.txt | $BASE_DIR/scripts/gemini-supervisor.sh --stdin --cwd "/work/dir"`
 
 **Gemini vision / PDF parsing** (Gemini natively supports PDF + image visual analysis — the standard path for scanned PDFs / screenshots):
 
 ```bash
-${CLAUDE_SKILL_DIR}/scripts/gemini-supervisor.sh \
+$BASE_DIR/scripts/gemini-supervisor.sh \
   --cwd "/path/to/files/dir" \
   "$(cat <<'PROMPT_END'
 Please fully parse all pages of xxx.pdf and output in markdown format:
@@ -184,16 +197,16 @@ Use cases: PDF catalogs (no text layer), scans, product datasheets, screenshot a
 
 ```bash
 # Default: Moonshot general endpoint (api.moonshot.cn/v1, MOONSHOT_API_KEY)
-${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "$(cat <<'EOF'
+$BASE_DIR/scripts/kimi-dispatch.sh "$(cat <<'EOF'
 prompt content
 EOF
 )"
 
 # Opt-in coding endpoint (Kimi CLI + api.kimi.com/coding/v1, KIMI_API_KEY)
-KIMI_FOR_CODING=1 ${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "prompt"
+KIMI_FOR_CODING=1 $BASE_DIR/scripts/kimi-dispatch.sh "prompt"
 
 # Fast mode (disable thinking, ~4s response)
-KIMI_NO_THINK=1 ${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "simple task"
+KIMI_NO_THINK=1 $BASE_DIR/scripts/kimi-dispatch.sh "simple task"
 ```
 
 | Endpoint | Characteristics | Best for |
@@ -229,9 +242,9 @@ When you need multiple models to give independent perspectives on the same quest
 
 ```bash
 # Three-way parallel example (same prompt to three models)
-${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "analysis task" &
-${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "analysis task" &
-${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model doubao "analysis task" &
+$BASE_DIR/scripts/kimi-dispatch.sh "analysis task" &
+$BASE_DIR/scripts/api-dispatch.sh --model deepseek "analysis task" &
+$BASE_DIR/scripts/api-dispatch.sh --model doubao "analysis task" &
 wait
 ```
 
@@ -303,12 +316,12 @@ For multi-dispatch runs, set `DISPATCH_BATCH_ID` to group responses from the sam
 
 ```bash
 batch_id="$(uuidgen)"
-DISPATCH_BATCH_ID="$batch_id" ${CLAUDE_SKILL_DIR}/scripts/kimi-dispatch.sh "task" &
-DISPATCH_BATCH_ID="$batch_id" ${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "task" &
+DISPATCH_BATCH_ID="$batch_id" $BASE_DIR/scripts/kimi-dispatch.sh "task" &
+DISPATCH_BATCH_ID="$batch_id" $BASE_DIR/scripts/api-dispatch.sh --model deepseek "task" &
 wait
 ```
 
-Implementation: see `${CLAUDE_SKILL_DIR}/scripts/dispatch-persist.mjs`.
+Implementation: see `$BASE_DIR/scripts/dispatch-persist.mjs`.
 
 ---
 

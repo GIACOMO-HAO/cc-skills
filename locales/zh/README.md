@@ -1,6 +1,8 @@
 # giasip-skills
 
 > ✦ GiaSip 的 [Claude Code](https://claude.com/claude-code) 自定义技能集 · github.com/GiaSip
+>
+> *Claude Code 原生技能。另有 vendor 中立的 portable playbook 版本（Codex 及其他 agent 可用），单独维护。*
 
 | 技能 | 说明 |
 |------|------|
@@ -37,7 +39,7 @@ cp -R giasip-skills/skills/giasip-research ~/.claude/skills/giasip-research
 cp -R giasip-skills/skills/giasip-dispatch ~/.claude/skills/giasip-dispatch
 ```
 
-> 三种装法触发命令都是 `/giasip-research`、`/giasip-dispatch`（署名焊在技能名上，不依赖安装方式），也可直接描述意图（如「帮我调研一下…」「用 Kimi 跑一下…」）自动触发。脚本路径用 `${CLAUDE_SKILL_DIR}` 自动定位，装在 `~/.claude/skills/` 还是 plugin 缓存目录都能正确解析。
+> 三种装法触发命令都是 `/giasip-research`、`/giasip-dispatch`（署名焊在技能名上，不依赖安装方式），也可直接描述意图（如「帮我调研一下…」「用 Kimi 跑一下…」）自动触发。派遣脚本就在技能自己的 `scripts/` 子目录里，dispatch 的 SKILL.md 会让 agent 在 session 开始时把 `BASE_DIR` 设为该目录，装在 `~/.claude/skills/` 还是 plugin 缓存目录都能用。
 
 ---
 
@@ -63,7 +65,7 @@ cp -R giasip-skills/skills/giasip-dispatch ~/.claude/skills/giasip-dispatch
 | 豆包（火山引擎） | `volcengine.env` | `export ARK_API_KEY=...` |
 | MiniMax | `minimax.env` | `export MINIMAX_API_KEY=...` |
 
-测试：`${CLAUDE_SKILL_DIR}/scripts/api-dispatch.sh --model deepseek "你好"`
+测试（按你的安装位置调整路径——全局安装为例）：`~/.claude/skills/giasip-dispatch/scripts/api-dispatch.sh --model deepseek "你好"`
 
 > 具体模型名（如 `deepseek-v4-pro`）写在 `api-dispatch.sh` 的 `case` 分支里，会随厂商版本更新——跑不通时去脚本里改 `MODEL_ID`。
 
@@ -75,7 +77,11 @@ cp -R giasip-skills/skills/giasip-dispatch ~/.claude/skills/giasip-dispatch
 | Gemini | `npm i -g @google/gemini-cli` | Google 账号 |
 | Kimi | `uv tool install kimi-cli`（或仅用 API key） | kimi.com / Moonshot key |
 
-依赖检查：`command -v codex gemini kimi node curl python3 jq`
+依赖检查：`command -v codex gemini kimi node curl python3 jq perl`
+
+> **Kimi 有两个后端。** 默认的 `kimi-dispatch.sh` 直接调 **Moonshot API**（其实是 API 通道，不是 CLI）——需要 `~/.config/ai-keys/kimi-moonshot.env`（含 `MOONSHOT_API_KEY`），不需要装 `kimi` CLI。加 `KIMI_FOR_CODING=1` 才切到 **Kimi CLI** coding endpoint——这条路径需要装 `kimi` CLI **外加** `~/.config/ai-keys/kimi.env`（含 `KIMI_API_KEY`）。
+>
+> **`perl` 是必需的**：Gemini 和 Kimi wrapper 用它做可移植超时控制——macOS 自带，精简 Linux 镜像需自行安装。
 
 > 所有脚本通过 `source ~/.config/ai-keys/*.env` 读取 key，**密钥只在你本地，不在本仓库**。
 

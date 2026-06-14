@@ -1,2 +1,15 @@
 .DS_Store
 .claude/
+
+# Secrets — never commit API keys (scripts read them from ~/.config/ai-keys/)
+*.env
+.env
+.env.*
+
+# Dependencies / build / runtime noise
+node_modules/
+*.log
+tmp/
+.tmp/
+__pycache__/
+*.pyc

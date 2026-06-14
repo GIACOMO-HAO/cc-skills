@@ -4,7 +4,7 @@ version: 1.2.0
 description: "Research orchestrator: runs a Quick Recon with SubAgents to map the landscape and knowledge gaps, then decides whether to escalate to an external Deep Research platform. Saves Deep Research quota by ensuring external platforms only handle what truly needs deep digging. Triggers on deep research, competitive analysis, market research, academic search, industry reports. Trigger signals: \"research X for me\", \"investigate\", \"deep analysis\", \"find materials on\", \"look into the XX market/industry\". Especially suited for complex research requiring multi-platform cross-validation. Even a simple question needing verification should trigger this skill to determine the best research path."
 author: GiaSip <https://github.com/GiaSip>
 license: MIT
-compatibility: claude-code, codex
+compatibility: claude-code
 ---
 
 > ✦ A **GiaSip** skill · part of the `giasip` toolkit · github.com/GiaSip
